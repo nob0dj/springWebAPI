@@ -15,16 +15,32 @@ public class CrawlingController {
 	@Autowired
 	JavaWebCrawler javaWebCrawler;
 	
-	@RequestMapping("/crawler")
+	@Autowired
+	HeadlessCrawler headlessCrawler;
+	
+	@RequestMapping("/crawling/7-eleven")
 	@ResponseBody
-	public List<Map<String,String>> crawler(){
+	public List<Map<String,String>> crawlingTo7Eleven(){
 		List<Map<String,String>> data = null;
 		try {
-			data = javaWebCrawler.test("http://www.7-eleven.co.kr/event/eventList.asp");
+			String url = "http://www.7-eleven.co.kr/event/eventList.asp";
+			data = javaWebCrawler.test(url);
+		
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		return data;
+	}
+	
+	@RequestMapping("/crawling/gs25")
+	@ResponseBody
+	public List<Map<String,String>> crawlingToGS25(){
+		
+		String url = "http://gs25.gsretail.com/gscvs/ko/customer-engagement/event/current-events";
+		List<Map<String,String>> data = headlessCrawler.getEventInfo(url);
+		
+		return data;
+
 	}
 }

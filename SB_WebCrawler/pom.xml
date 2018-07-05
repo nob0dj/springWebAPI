@@ -17,6 +17,14 @@
 		<version>2.0.3.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+	
+	<!-- #ghostDriver Private Repo : phatom.js -->
+	<repositories>
+	  <repository>
+	      <id>jitpack.io</id>
+	      <url>https://jitpack.io</url>
+	  </repository>
+	</repositories>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -61,6 +69,13 @@
 		    <version>1.7.2</version>
 		</dependency>
 				
+		<!-- #ghostDriver : phatom.js -->
+		<dependency>
+		    <groupId>com.github.detro</groupId>
+		    <artifactId>ghostdriver</artifactId>
+		    <version>2.1.0</version>
+		</dependency>
+		
 		
 		
 	</dependencies>
@@ -71,8 +86,42 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-		</plugins>
-	</build>
-
+			
+            <plugin>
+                <groupId>com.github.searls</groupId>
+                <artifactId>jasmine-maven-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <goals><goal>test</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 
+            <plugin>
+                <groupId>com.github.searls</groupId>
+                <artifactId>jasmine-maven-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <jsSrcDir>src/main/webapp/javascript</jsSrcDir>
+                            <jsTestSrcDir>src/main/webapp/javascript-test</jsTestSrcDir>
+                            <webDriverCapabilities>
+                                <webDriverCapability>
+                                    <name>phantomjs.binary.path</name>
+                                    <value>C:\dev\phantomjs-2.1.1-windows\bin</value>
+                                </webDriverCapability>
+                            </webDriverCapabilities>
+                        </configuration>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin> -->
+        </plugins>
+    </build>
+			
 
 </project>
