@@ -9,25 +9,40 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.kh.spring.crawling.model.crawling.JavaWebCrawler;
+import com.kh.spring.crawling.model.crawler.HeadlessCrawler;
+import com.kh.spring.crawling.model.crawler.JavaWebCrawler;
 
 @Controller
 public class CrawlingController {
 	
 	@Autowired
-	JavaWebCrawler javaWebCrawler;
+	JavaWebCrawler javaWebCrawler;//정적페이지용 크롤러
 	
-	@RequestMapping("/crawling")
-	public String crawler(Model model){
+	@Autowired
+	HeadlessCrawler headlessCrawler;//동적으로 생성된 요소가 있는 페이지용 크롤러
+	
+	@RequestMapping("/crawling/7-eleven")
+	public void crawlingTo7Eleven(Model model){
 		List<Map<String,String>> data = null;
 		try {
-			data = javaWebCrawler.test("http://www.7-eleven.co.kr/event/eventList.asp");
+			String url = "http://www.7-eleven.co.kr/event/eventList.asp";
+			data = javaWebCrawler.getEventInfo(url);
+		
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		model.addAttribute("sevenElevenEventList", data);
+		model.addAttribute("data", data);
 		
-		return "crawling/crawling";
+	}
+	
+	@RequestMapping("/crawling/gs25")
+	public void crawlingToGS25(Model model){
+		
+		String url = "http://gs25.gsretail.com/gscvs/ko/customer-engagement/event/current-events";
+		List<Map<String,String>> data = headlessCrawler.getEventInfo(url);
+		
+		model.addAttribute("data", data);
+
 	}
 }

@@ -1,14 +1,21 @@
-package com.kh.spring.crawling.model.crawling;
+package com.kh.spring.crawling.model.crawler;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,7 +26,7 @@ import org.springframework.stereotype.Component;
 public class JavaWebCrawler {
 
 
-	public List<Map<String,String>> test(String url) throws ClientProtocolException, IOException {
+	public List<Map<String,String>> getEventInfo(String url) throws ClientProtocolException, IOException {
 		String result = "";
 
 		
@@ -47,7 +54,7 @@ public class JavaWebCrawler {
 	    }
 	    // 9. 가져온 아름다운 DOM을 보자
 	    result  = sb.toString();
-	    //System.out.println(result);
+	    System.out.println(result);
 		// 10. Jsoup으로 파싱해보자.
 		//Document doc = Jsoup.parse(sb.toString());
 	    */

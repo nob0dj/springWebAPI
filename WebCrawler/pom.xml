@@ -19,6 +19,11 @@
 			<id>datanucleus-repo</id>
 			<url>http://www.datanucleus.org/downloads/maven2/</url>
 		</repository>
+		<!-- #ghostDriver Private Repo : phatom.js -->
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
 	</repositories>
 	
 	<dependencies>
@@ -234,11 +239,11 @@
 		</dependency>
 		
 		<!-- 아파치가 제공하는 http 관련 라이브러리 -->
-		<dependency>
+		<!-- <dependency>
 		  <groupId>org.apache.httpcomponents</groupId>
 		  <artifactId>httpclient</artifactId>
 		  <version>4.5.5</version>
-		</dependency>
+		</dependency> -->
 		
 		<!-- Dom을 파싱하는 jsoup -->
 		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
@@ -247,7 +252,14 @@
 		    <artifactId>jsoup</artifactId>
 		    <version>1.7.2</version>
 		</dependency>
-		       
+		
+		<!-- #ghostDriver : phatom.js -->
+		<dependency>
+		    <groupId>com.github.detro</groupId>
+		    <artifactId>ghostdriver</artifactId>
+		    <version>2.1.0</version>
+		</dependency>
+		
 	</dependencies>
     <build>
         <plugins>
