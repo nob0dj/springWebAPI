@@ -23,8 +23,9 @@ public class CrawlingController {
 	public List<Map<String,String>> crawlingTo7Eleven(){
 		List<Map<String,String>> data = null;
 		try {
+			
 			String url = "http://www.7-eleven.co.kr/event/eventList.asp";
-			data = javaWebCrawler.test(url);
+			data = javaWebCrawler.getEventInfo(url);
 		
 		} catch (IOException e) {
 			e.printStackTrace();
