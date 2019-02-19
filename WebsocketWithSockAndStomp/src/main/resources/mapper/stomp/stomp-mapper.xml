@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="stomp">
+	<select id="findChatIdByMemberId" resultType="string">
+		SELECT CHATID FROM CHATROOM 
+		WHERE STATUS = 'Y'
+			AND MEMBERID = #{memberId}
+	</select>
+	<insert id="insertChatRoom">
+		INSERT INTO CHATROOM (CHATID, MEMBERID)
+		VALUES(#{chatId}, #{memberId})
+	</insert>
+	<update id="updateLastCheck">
+		UPDATE CHATROOM SET LASTCHECK =  #{time}
+		WHERE CHATID = #{chatId} AND MEMBERID = #{memberId}
+	</update>
+	<insert id="insertChatLog">
+		INSERT INTO CHATLOG (CHATNO, CHATID, MEMBERID, MSG, TIME)
+		VALUES(SEQ_CHATLOG.NEXTVAL, #{chatId}, #{memberId}, #{msg}, #{time})
+	</insert>
+	<update id="deleteChatRoom">
+		UPDATE CHATROOM SET STATUS = 'N', ENDDATE=SYSDATE
+		WHERE CHATID = #{chatId}
+	</update>
+	<select id="findRecentList" resultType="map">
+		select *
+		from (
+		    select chatno,
+		           A.chatid, 
+		           (select memberid from chatroom where A.chatid = chatid and memberid != 'admin') memberid, 
+		           msg, 
+		           time,
+		           count(*) over(partition by A.chatid,A.memberid) cnt,
+		           rank() over(partition by A.chatid order by time desc) rank 
+		    from chatlog A left join chatroom B
+		        on A.chatid = B.chatid and A.memberid = B.memberid
+		    where time > (select lastcheck from chatroom C where C.chatid = A.chatid and memberid = 'admin')
+		    order by time desc)A
+		where rank = 1
+		union all 
+		select *
+		from (
+		    select chatno,
+		           A.chatid, 
+		           (select memberid from chatroom where A.chatid = chatid and memberid != 'admin') memberid, 
+		           msg, 
+		           time,
+		           0 cnt,
+		           rank() over(partition by A.chatid order by time desc) rank 
+		    from chatlog A left join chatroom B
+			        on A.chatid = B.chatid and A.memberid = B.memberid
+			order by time desc)A
+		where rank = 1 and time <![CDATA[ <= ]]> (select lastcheck from chatroom C where C.chatid = A.chatid and memberid = 'admin')
+	</select>
+	<select id="findChatListByChatId" resultType="msg">
+		select * 
+		from chatlog
+		where chatid = #{chatId}
+		order by chatno
+	</select>
+</mapper>
