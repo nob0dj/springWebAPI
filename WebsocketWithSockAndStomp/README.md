@@ -1,11 +1,17 @@
 # WebSocketWithSockAndStomp
 회원관련 기능이 모두 구현되어 있는 spring legacy project에서 진행한다.
+**oracle데이터베이스 쿼리는 프로젝트 root directory에 websocket.sql파일 사용할 것.**
 
-
+[[Spring - WebSocket을 활용한 채팅 서비스 구현]](https://m.blog.naver.com/scw0531/221052774287)
 [Spring 4.x에서의 WebSocket, SockJS, STOMP](https://netframework.tistory.com/entry/Spring-4x%EC%97%90%EC%84%9C%EC%9D%98-WebSocket-SockJS-STOMP)
+[Spring에서 WebSocket 사용시 HttpSession에 저장된 값 사용하기-HttpSessoinHankshakeInterceptor](https://mobilenweb.tistory.com/174)
+[Spring WebSocket 소개 - httpHandshake설명 잘되어 있음.](https://supawer0728.github.io/2018/03/30/spring-websocket/)
+
+
 
 
 ## 1.표준 WebSocket
+Spring 4.0 환경에서부터  Spring스팩에서 Web에 속해있다. 
 
 @pom.xml
 5.0.6.RELEASE로 테스트
@@ -247,6 +253,7 @@ sock.js는 http프로토콜을 사용한다.
 ## 3.stomp.js
 subscription, user개념을 도입.
 
+[공식api tutorial: Using WebSocket to build an interactive web application](https://spring.io/guides/gs/messaging-stomp-websocket/)
 
 비회원, 회원 모두 관리자와 채팅이 가능하고, 이를 db에서 관리한다.
 단, 비회원은 jsessionid를 memberId로 사용하는데, 이를 client단에서 javascript를 통해 가져오지 못하므로(httpOnly 옵션 true인 경우, document.cookie로 접근 불가), 서버측에서 속성값으로 관리한다.
@@ -392,6 +399,25 @@ core태그 변수로 chatId 선언
         
     }
 
+이를 xml에 선언적으로 구성한다면, 다음과 같다
+@/WEB-INF/spring/appServlet/servlet-context.xml
+
+    <!-- stomp관련 빈등록하기 -->
+	<!-- <websocket:message-broker application-destination-prefix="/spring">
+		<websocket:stomp-endpoint path="/stomp">
+			<websocket:handshake-interceptors>
+				<beans:bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor" />
+			</websocket:handshake-interceptors>
+			<websocket:sockjs session-cookie-needed="true"/>
+		</websocket:stomp-endpoint>
+		<websocket:simple-broker prefix="/hello, /chat"/>
+	</websocket:message-broker> -->
+
+
+
+
+
+
 @com.kh.spring.stomp.controller.StompController
 client가 `/hello`로 요청하면, `/hello`로 구독한 client에게 메세지 전송.
 
@@ -439,11 +465,11 @@ WebSocketSessionId 가져오기
         "STARTDATE" DATE DEFAULT sysdate, 
         "ENDDATE" DATE, 
         CONSTRAINT "CK_CHATROOM_STATUS" CHECK (status in('Y','N')) ENABLE, 
-        CONSTRAINT "PK_CHATROOMNO" PRIMARY KEY ("CHATID","MEMBERID")
+        CONSTRAINT "PK_CHATROOM" PRIMARY KEY ("CHATID","MEMBERID")
     );
 
 
-    CREATE TABLE "SPRING"."CHATLOG" 
+    CREATE TABLE "SPRING"."CHATLOG"     
     (	
         "CHATNO" NUMBER, 
         "CHATID" CHAR(20 BYTE) NOT NULL, 
@@ -788,6 +814,8 @@ mapper.xml에서는 --주석이 에러유발하므로, 복붙할 때 주의할 �
     </script>
 
 ## 팝업창구현
+
+
 팝업창으로 다른 회원과 채팅하게 된다.
 
     @GetMapping("/ws/adminChat.do/{chatId}")

@@ -170,6 +170,7 @@ public class MemberController {
 	 @RequestMapping(value="/member/memberLogin.do", method=RequestMethod.POST)
 	public ModelAndView memberLogin(ModelAndView mav, @RequestParam String memberId, @RequestParam String password){
 		if(logger.isDebugEnabled()) logger.debug("로그인요청!");
+		logger.info("encodedPassword={}",bcryptPasswordEncoder.encode(password));
 		
 	 	//리턴할 ModelAndView객체 생성하거나, 파라미터로 설정해 핸들러호출 이전에 생성된 ModelAndView를 사용. 
 		ModelAndView mav_ = new ModelAndView();

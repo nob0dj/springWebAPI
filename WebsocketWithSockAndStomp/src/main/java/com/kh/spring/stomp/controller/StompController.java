@@ -57,6 +57,11 @@ public class StompController {
 			list.add(new ChatRoom(chatId, memberId, 0, "Y", null, null));
 			stompService.insertChatRoom(list);
 		}
+		//chatId가 존재하는 경우, 채팅내역 조회
+		else{
+			List<Msg> chatList = stompService.findChatListByChatId(chatId);
+			model.addAttribute("chatList", chatList);
+		}
 		
 		logger.info("memberId=[{}], chatId=[{}]",memberId, chatId);
 		

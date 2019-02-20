@@ -13,7 +13,11 @@
   </div>
 </div>
 <div>
-	<ul class="list-group list-group-flush" id="data"></ul>
+	<ul class="list-group list-group-flush" id="data">
+	<c:forEach items="${chatList}" var="m">
+		<li class="list-group-item">${m.memberId }: ${m.msg }</li>
+	</c:forEach>	
+	</ul>
 </div>
 <script type="text/javascript">
 $(document).ready(function() {

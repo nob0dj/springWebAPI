@@ -44,6 +44,8 @@ public class AdminStompController {
 		model.addAttribute("recentList", recentList);
 		
 	}
+	
+	
 	@GetMapping("/ws/adminChat.do/{chatId}")
 	public String adminChat(@PathVariable("chatId") String chatId, Model model){
 		
