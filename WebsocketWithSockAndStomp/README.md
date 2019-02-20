@@ -1,10 +1,14 @@
 # WebSocketWithSockAndStomp
 회원관련 기능이 모두 구현되어 있는 spring legacy project에서 진행한다.
+
 **oracle데이터베이스 쿼리는 프로젝트 root directory에 websocket.sql파일 사용할 것.**
 
 [[Spring - WebSocket을 활용한 채팅 서비스 구현]](https://m.blog.naver.com/scw0531/221052774287)
+
 [Spring 4.x에서의 WebSocket, SockJS, STOMP](https://netframework.tistory.com/entry/Spring-4x%EC%97%90%EC%84%9C%EC%9D%98-WebSocket-SockJS-STOMP)
+
 [Spring에서 WebSocket 사용시 HttpSession에 저장된 값 사용하기-HttpSessoinHankshakeInterceptor](https://mobilenweb.tistory.com/174)
+
 [Spring WebSocket 소개 - httpHandshake설명 잘되어 있음.](https://supawer0728.github.io/2018/03/30/spring-websocket/)
 
 
