@@ -881,7 +881,7 @@ mapper.xml에서는 --주석이 에러유발하므로, 복붙할 때 주의할 �
 
     });
 
-    function sendMessage() {
+    function sendMessage() {	
 
         let data = {
             chatId : "${chatId}",

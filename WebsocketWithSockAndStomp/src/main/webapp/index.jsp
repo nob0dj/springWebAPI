@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <jsp:include page="/WEB-INF/views/common/header.jsp">
-	<jsp:param value="Hello Spring" name="pageTitle"/>
+	<jsp:param value="Hello Spring WebSocket" name="pageTitle"/>
 </jsp:include>
 
-<img src="${pageContext.request.contextPath }/resources/images/logo-spring.png" id="center-image" alt="?Š¤?”„ë§ë¡œê³?" />
+<img src="${pageContext.request.contextPath }/resources/images/logo-spring.png" id="center-image" alt="?ï¿½ï¿½?ï¿½ï¿½ë§ë¡œï¿½?" />
 	
 <jsp:include page="/WEB-INF/views/common/footer.jsp"></jsp:include>

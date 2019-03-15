@@ -21,9 +21,12 @@
     <!-- proxyDataSource using realDataSource -->
     <bean id="realDatasource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
-        <property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
         <property name="username" value="spring"/>
         <property name="password" value="spring"/>
+        <!-- 개발서버 -->
+        <property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+		<!-- AWS RDS 서버 -->
+        <!-- <property name="url" value="jdbc:oracle:thin:@oracle-shqkel1863.cx34azaevw3s.ap-northeast-2.rds.amazonaws.com:1521:orcl"/> -->
     </bean>
     <bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">  
         <constructor-arg ref="realDatasource" />

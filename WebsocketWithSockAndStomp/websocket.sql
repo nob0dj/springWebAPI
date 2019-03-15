@@ -1,4 +1,4 @@
---------------------------------------------------------
+﻿--------------------------------------------------------
 --  File created - Wednesday-February-20-2019   
 --------------------------------------------------------
 --------------------------------------------------------
@@ -84,7 +84,7 @@ Insert into SPRING.MEMBER (MEMBERID,PASSWORD,MEMBERNAME,GENDER,AGE,EMAIL,PHONE,A
 Insert into SPRING.MEMBER (MEMBERID,PASSWORD,MEMBERNAME,GENDER,AGE,EMAIL,PHONE,ADDRESS,HOBBY,ENROLLDATE) values ('test1','bfb447a9b23ae686f075f5f6dc6a5caeee74c561','테스트 salt','F',23,'gmail@gamil.com','01012341234',null,'운동,여행',to_date('12-05-18','DD-MM-RR'));
 Insert into SPRING.MEMBER (MEMBERID,PASSWORD,MEMBERNAME,GENDER,AGE,EMAIL,PHONE,ADDRESS,HOBBY,ENROLLDATE) values ('test2','21ce93ad18e10be1baabe2eea4faef09abda3456','테스트 salt2','M',23,'gmail@gamil.com','01012341234',null,'운동,등산,여행',to_date('12-05-18','DD-MM-RR'));
 Insert into SPRING.MEMBER (MEMBERID,PASSWORD,MEMBERNAME,GENDER,AGE,EMAIL,PHONE,ADDRESS,HOBBY,ENROLLDATE) values ('nohobby','$2a$10$r7Twhki7MUg5G1q/9sP.junkWzr5jSMkxspi3BaC.36tPtBsd2Qm2','노취미','M',23,'abc@naver.com','01012341234',null,null,to_date('14-05-18','DD-MM-RR'));
-Insert into SPRING.MEMBER (MEMBERID,PASSWORD,MEMBERNAME,GENDER,AGE,EMAIL,PHONE,ADDRESS,HOBBY,ENROLLDATE) values ('tuuk','$2a$10$vGBJMekm/yafNEmoTxuVW.q4SAR8XXVvO4AHOzo/qX2WRD4yIZe7S','김투이','M',38,'tuuk@gmail.com','01012341234',null,null,to_date('03-01-19','DD-MM-RR'));
+Insert into SPRING.MEMBER (MEMBERID,PASSWORD,MEMBERNAME,GENDER,AGE,EMAIL,PHONE,ADDRESS,HOBBY,ENROLLDATE) values ('tuuk','$2a$10$vGBJMekm/yafNEmoTxuVW.q4SAR8XXVvO4AHOzo/qX2WRD4yIZe7S','강백호','M',38,'tuuk@gmail.com','01012341234',null,null,to_date('03-01-19','DD-MM-RR'));
 --------------------------------------------------------
 --  DDL for Index PK_CHATLOG
 --------------------------------------------------------
