@@ -31,13 +31,18 @@
 			<a class="navbar-brand" href="#">
 				<img src="${pageContext.request.contextPath }/resources/images/logo-spring.png" alt="" width="50px" />
 			</a>
-		  	<!-- 반응?��?���? width 줄어?��경우, collapse버튼�??�� -->
+			
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 		  	</button>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav mr-auto">
 			      <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}">Home</a></li>
+			      <li class="nav-item">
+			      	<a class="nav-link" href="https://github.com/nob0dj/springWebAPI/tree/master/WebsocketWithSockAndStomp" title="github소스보기">
+			      		<img src="https://d.pr/i/ngKs9j+" width="16" alt="github이미지" />
+			      	</a>
+			      </li>			      
 			      <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/ws/websocket.do">Websocket</a></li>
 			      <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/ws/sock.do">sock.js</a></li>
 			      <c:if test="${memberLoggedIn==null || \"admin\" ne memberLoggedIn.memberId}">
