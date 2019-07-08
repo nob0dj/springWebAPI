@@ -20,17 +20,18 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JavaWebCrawler {
 
+	Logger logger = LoggerFactory.getLogger(getClass());
 
-	public List<Map<String,String>> getEventInfo(String url) throws ClientProtocolException, IOException {
+	public List<Map<String,String>> getEventInfoByApache(String url) throws ClientProtocolException, IOException {
 		String result = "";
 
-		
-		/*
 		//#1. apache 라이브러리를 사용
 		// 1. 가져올 HTTP 주소 세팅
 	    HttpPost http = new HttpPost(url);
@@ -54,28 +55,24 @@ public class JavaWebCrawler {
 	    }
 	    // 9. 가져온 아름다운 DOM을 보자
 	    result  = sb.toString();
-	    System.out.println(result);
+	    logger.debug("resutl={}",result);
 		// 10. Jsoup으로 파싱해보자.
-		//Document doc = Jsoup.parse(sb.toString());
-	    */
-	    
-		//#2.Jsoup라이브러리 사용
-	    Document doc = Jsoup.connect(url).get();
-	    result = doc.data();
-	    
+		Document doc = Jsoup.parse(sb.toString());
+	   
+	   
 	    //특정엘레먼트 찾기
 	    Elements elems = doc.select("ul#listUl li");
-//	    System.out.println("elems="+elems);
-//	    System.out.println("elems="+elems.size());
+	    logger.debug("elems.size=", elems.size());
+	    logger.debug("elems={}", elems);
 	    List<Map<String,String>> eventList = new ArrayList<>();
 	    
 	    //elems의 마지막요소는 +(More)이라 건너뜀.
 	    for(int i=0; i<elems.size()-1; i++){
 	    	Element e = elems.get(i);
 	    	Element a = e.select("a").get(0);
-	    	//System.out.println("a="+a);
+	    	//logger.debug("a={}",a);
 	    	Element dl = e.select("div.event_over").get(0).select("dl").get(0);
-	    	//System.out.println("div="+div);
+	    	//logger.debug("div={}",div);
 	    	
 	    	Map<String,String> map = new HashMap<>();
 	    	map.put("a.href", a.attr("href"));
@@ -84,9 +81,50 @@ public class JavaWebCrawler {
 	    	map.put("dd", dl.select("dd.date").get(0).text());
 	    	eventList.add(map);
 	    }
-	    System.out.println("eventList="+eventList);
+	    logger.debug("eventList={}",eventList);
 
 	    return eventList;
+	}
+	
+	/**
+	 * JSoup 라이브러리 사용: 간단
+	 * 
+	 * @param url
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public List<Map<String,String>> getEventInfoByJSoup(String url) throws ClientProtocolException, IOException {
+		String result = "";
+		
+		//Jsoup라이브러리 사용
+		Document doc = Jsoup.connect(url).get();
+		result = doc.data();
+		
+		//특정엘레먼트 찾기
+		Elements elems = doc.select("ul#listUl li");
+	    logger.debug("elems.size=", elems.size());
+	    logger.debug("elems={}", elems);
+		List<Map<String,String>> eventList = new ArrayList<>();
+		
+		//elems의 마지막요소는 +(More)이라 건너뜀.
+		for(int i=0; i<elems.size()-1; i++){
+			Element e = elems.get(i);
+			Element a = e.select("a").get(0);
+			//logger.debug("a={}",a);
+	    	Element dl = e.select("div.event_over").get(0).select("dl").get(0);
+	    	//logger.debug("div={}",div);
+			
+			Map<String,String> map = new HashMap<>();
+			map.put("a.href", a.attr("href"));
+			map.put("img.src", a.select("img").get(0).attr("src"));
+			map.put("dt", dl.select("dt").get(0).text());
+			map.put("dd", dl.select("dd.date").get(0).text());
+			eventList.add(map);
+		}
+		logger.debug("eventList={}",eventList);
+		
+		return eventList;
 	}
 
 }

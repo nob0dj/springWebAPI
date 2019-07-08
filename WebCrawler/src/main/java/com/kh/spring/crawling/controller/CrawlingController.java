@@ -26,7 +26,10 @@ public class CrawlingController {
 		List<Map<String,String>> data = null;
 		try {
 			String url = "http://www.7-eleven.co.kr/event/eventList.asp";
-			data = javaWebCrawler.getEventInfo(url);
+			//1.apache+jsoup
+			//data = javaWebCrawler.getEventInfoByApache(url);
+			//2.jsoup
+			data = javaWebCrawler.getEventInfoByJSoup(url);
 		
 		} catch (IOException e) {
 			e.printStackTrace();

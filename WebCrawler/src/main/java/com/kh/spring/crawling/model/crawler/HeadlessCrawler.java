@@ -19,7 +19,7 @@ public class HeadlessCrawler {
   protected static DesiredCapabilities dCaps;
 
   public HeadlessCrawler() {
-	  
+	  //https://phantomjs.org/download
 	  //본인컴퓨터에 다운받은 phantomjs.exe파일의 절대주소를 시스템속성에 등록해야함.
 	  System.setProperty("phantomjs.binary.path", "C:\\dev\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
 	  
