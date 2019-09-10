@@ -41,7 +41,9 @@ public class StompController {
 	public void websocket(Model model, 
 						  HttpSession session, 
 						  @SessionAttribute(value="memberLoggedIn", required=false) Member memberLoggedIn){
-		String memberId = Optional.ofNullable(memberLoggedIn).map(Member::getMemberId).orElse(session.getId());
+		String memberId = Optional.ofNullable(memberLoggedIn)
+								  .map(Member::getMemberId)
+								  .orElse(session.getId());
 		String chatId = null;
 		
 		//chatId조회
@@ -65,9 +67,11 @@ public class StompController {
 		
 		logger.info("memberId=[{}], chatId=[{}]",memberId, chatId);
 		
+		//비회원일 경우, httpSessionId값을 chatId로 사용한다. 
+		//클라이언트에서는 httpOnly-true로 설정된 cookie값은 document.cookie로 가져올 수 없다.
+//		model.addAttribute("httpSessionId", session.getId());
 		
 		//비회원일 경우, httpSessionId값을 memberId로 사용한다. 
-		//클라이언트에서는 httpOnly-true로 설정된 cookie값은 document.cookie로 가져올 수 없다.
 		model.addAttribute("memberId", memberId);
 		model.addAttribute("chatId", chatId);
 	}

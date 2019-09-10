@@ -7,7 +7,7 @@
 	<jsp:param value="Hello Stomp.js" name="pageTitle"/>
 </jsp:include>
 <div class="input-group mb-3">
-  <input type="text" id="message" class="form-control" placeholder="Message">
+  <input type="text" id="message" class="form-control" placeholder="관리자에게 보내는 Message">
   <div class="input-group-append" style="padding: 0px;">
     <button id="sendBtn" class="btn btn-outline-secondary" type="button">Send</button>
   </div>

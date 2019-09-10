@@ -265,11 +265,22 @@ subscription, user개념을 도입.
 #### 구현내용
 사용자는 관리자와 1:1채팅할 수 있다. 실시간으로 채팅내역을 확인할 수 있다.
 관리자는 모든 사용자와 채팅이 가능하고, 이를 목록으로 관리한다.
-* 목록은 읽지 않은 내용을 먼저 보여준후, 다 읽은 채팅내역을 보여준다.
+* 관리자용 채팅목록은 읽지 않은 내용이 있는 채팅, 모두 읽은 채팅순으로 출력한다. 
 * 사용자와 채팅은 popup창을 통해 각각 관리한다.
 * 관리자는 마지막 확인 시점을 기준으로 읽지 않은 메세지를 카운트 할 수 있다.(카톡과 동일)
 * 목록은 실시간으로 갱신된다.
 
+
+@pom.xml
+이후 구현할 com.kh.spring.stomp.StompConfigurer.configureMessageBroker메소드의 MessageBrokerRegistry클래스를 사용하는데 
+다음 의존이 필요하다.
+
+    <!-- stomp관련 의존 추가 -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-messaging</artifactId>
+        <version>${org.springframework-version}</version>
+    </dependency>
 
 
 @com.kh.spring.stomp.controller.StompController

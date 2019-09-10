@@ -10,6 +10,18 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
+/**
+ * @author nobodj
+ *
+ */
+/**
+ * @author nobodj
+ *
+ */
+/**
+ * @author nobodj
+ *
+ */
 @Configuration
 @EnableWebSocketMessageBroker
 public class StompConfigurer extends AbstractWebSocketMessageBrokerConfigurer{
@@ -30,6 +42,10 @@ public class StompConfigurer extends AbstractWebSocketMessageBrokerConfigurer{
 		
 	}
 
+	
+	/**
+	 * message-
+	 */
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
 		//핸들러메소드의 @SendTo 에 대응함. 여기서 등록된 url을 subscribe하는 client에게 전송.
