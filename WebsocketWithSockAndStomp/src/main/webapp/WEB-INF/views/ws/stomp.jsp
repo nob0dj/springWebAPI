@@ -23,12 +23,10 @@
 $(document).ready(function() {
 	$("#sendBtn").click(function() {
 		sendMessage();
-		$('#message').val('')
 	});
 	$("#message").keydown(function(key) {
 		if (key.keyCode == 13) {// 엔터
 			sendMessage();
-			$('#message').val('')
 		}
 	});
 
@@ -38,16 +36,6 @@ $(document).ready(function() {
 		lastCheck();
 	});
 });
-//윈도우가 활성화 되었을때, chatroom테이블의 lastcheck(number)컬럼을 갱신한다.
-//안읽은 메세지 읽음 처리
-function lastCheck() {
-	let data = {
-		chatId : "${chatId}",
-		memberId : "${memberId}",
-		time : new Date().getTime()
-	}
-	stompClient.send('<c:url value="/lastCheck" />', {}, JSON.stringify(data));
-}
 
 //웹소켓 선언
 //1.최초 웹소켓 생성 url: /stomp
@@ -63,11 +51,11 @@ stompClient.connect({}, function(frame) {
 	lastCheck();
 	
 	//stomp에서는 구독개념으로 세션을 관리한다. 핸들러 메소드의 @SendTo어노테이션과 상응한다.
-	stompClient.subscribe('/hello', function(message) {
+	/* stompClient.subscribe('/hello', function(message) {
 		console.log("receive from /hello :", message);
 		let messsageBody = JSON.parse(message.body);
 		$("#data").append("<li class=\"list-group-item\">"+messsageBody.memberId+" : "+messsageBody.msg+ "</li>");
-	});
+	}); */
 
 	//stomp에서는 구독개념으로 세션을 관리한다. 핸들러 메소드의 @SendTo어노테이션과 상응한다.
 	stompClient.subscribe('/chat/${chatId}', function(message) {
@@ -93,7 +81,25 @@ function sendMessage() {
 	
 	//채팅메세지: 1:1채팅을 위해 고유한 chatId를 서버측에서 발급해 관리한다.
 	stompClient.send('<c:url value="/chat/${chatId}" />', {}, JSON.stringify(data));
+	
+	//message창 초기화
+	$('#message').val('');
 }
+
+
+/*
+ * 윈도우가 활성화 되었을때, chatroom테이블의 lastcheck(number)컬럼을 갱신한다.
+ * 안읽은 메세지 읽음 처리
+ */ 
+function lastCheck() {
+    let data = {
+        chatId : "${chatId}",
+        memberId : "${memberId}",
+        time : new Date().getTime()
+    }
+    stompClient.send('<c:url value="/lastCheck" />', {}, JSON.stringify(data));
+}
+
 
 
 </script>

@@ -19,12 +19,10 @@
 $(document).ready(function() {
        $("#sendBtn").click(function() {
                sendMessage();
-               $('#message').val('')
        });
        $("#message").keydown(function(key) {
                if (key.keyCode == 13) {// 엔터
                       sendMessage();
-                      $('#message').val('')
                }
        });
 });
@@ -55,6 +53,7 @@ function onClose(evt) {
 //메시지 전송
 function sendMessage() {
     ws.send($("#message").val());
+    $('#message').val('');
 }
 </script>
 <jsp:include page="/WEB-INF/views/common/footer.jsp"></jsp:include>

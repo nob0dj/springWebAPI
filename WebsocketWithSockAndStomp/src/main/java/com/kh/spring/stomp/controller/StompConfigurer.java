@@ -10,18 +10,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
-/**
- * @author nobodj
- *
- */
-/**
- * @author nobodj
- *
- */
-/**
- * @author nobodj
- *
- */
 @Configuration
 @EnableWebSocketMessageBroker
 public class StompConfigurer extends AbstractWebSocketMessageBrokerConfigurer{
