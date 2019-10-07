@@ -59,7 +59,7 @@ stompClient.connect({}, function(frame) {
 
 	//stomp에서는 구독개념으로 세션을 관리한다. 핸들러 메소드의 @SendTo어노테이션과 상응한다.
 	stompClient.subscribe('/chat/${chatId}', function(message) {
-		console.log("receive from /subscribe/stomp/abcde :", message);
+		console.log("receive from subscribe /chat/${chatId} :", message);
 		let messsageBody = JSON.parse(message.body);
 		$("#data").append("<li class=\"list-group-item\">"+messsageBody.memberId+" : "+messsageBody.msg+ "</li>");
 	});
