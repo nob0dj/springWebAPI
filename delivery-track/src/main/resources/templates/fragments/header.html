@@ -11,6 +11,19 @@
 		<a class="navbar-brand" href="#">
 			<img th:src="@{/images/logo-spring.png}" alt="스프링로고" width="50px" />
 		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+	  	</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav mr-auto">
+		      <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+		      <li class="nav-item">
+		      	<a class="nav-link" href="https://github.com/nob0dj/springWebAPI/tree/master/delivery-track" title="github소스보기">
+		      		<img src="https://d.pr/i/ngKs9j+" width="16" alt="github이미지" />
+		      	</a>
+		      </li>
+			</ul>
+		</div>	
 	</nav>
 </header>
 </html>
