@@ -1,0 +1,13 @@
+#application.yml
+server:
+  port: 9999
+  servlet:
+    context-path: /delivery-track
+   
+#logging
+logging:
+  level:
+    com.kh.delivery.track: DEBUG
+    
+
+   

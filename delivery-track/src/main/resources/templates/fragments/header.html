@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thyumeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<header th:fragment="headerFragment">
+	<!-- header영역입니다. -->
+	<div id="header-container">
+		<h2 th:text="${pageTitle}"></h2>
+	</div>
+	<!-- https://getbootstrap.com/docs/4.0/components/navbar/ -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="#">
+			<img th:src="@{/images/logo-spring.png}" alt="스프링로고" width="50px" />
+		</a>
+	</nav>
+</header>
+</html>

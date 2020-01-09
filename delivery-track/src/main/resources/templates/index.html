@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorator="layout/default">
+	  
+<head>
+	<title th:text="${pageTitle}"></title>
+	<style>
+	.wrapper {
+		width: 300px;
+		padding: 10px;
+		margin: 0 auto;
+	}
+	.wrapper * {
+		margin-bottom: 20px;
+	}
+	
+	.tbl-wrapper {
+		width: 80%;
+		padding: 10px;
+		margin: 0 auto;
+	}
+	</style>
+</head>
+<body layout:fragment="content">
+	<!-- Modal START-->
+	<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-centered" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLongTitle" style="color:#28a745;">Announcement</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        <p>
+		        You are on web-service that some lazy developer built 
+		        and he's using free version of api key 
+		        which is available 
+		        from <th:block th:text=${apiKeyStart}></th:block>
+		        to <th:block th:text=${apiKeyEnd}></th:block>.
+	        </p>
+	        <p>
+		        And Today is <th:block th:text=${now}></th:block>.
+		        <br />
+		        If it's not available today,
+		        please let that lazy dev know that.
+		        <br /> 
+		        By the way you are very welcome to this site. 
+	        </p>
+	         
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-outline-success" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- Modal END -->
+	
+	<div class="wrapper">
+		<select class="custom-select" id="deliveryCompnayList" name="deliveryCompnayList"></select>
+			
+		<input type="text" class="form-control" id="invoiceNumberText" name="invoiceNumberText" placeholder="운송장 번호">
+		<button type="button" class="btn btn-outline-success btn-lg btn-block" id="myButton1">조회</button>
+		
+	</div>
+
+	<hr />
+	
+	<div class="tbl-wrapper">
+		<table id="tbl-invoice" class="table"></table>
+		<table id="tbl-tracking" class="table table-hover"></table>
+	</div>
+
+		
+
+
+<script>
+//api key 갱신하기
+//https://tracking.sweettracker.co.kr/templates/app.html#/apikey/add
+let myKey = "ElEr47kWURCxNazU3sxyLA"; // sweet tracker에서 발급받은 자신의 키 넣는다.
+
+$(()=>{
+	//onload시에 apikey유효기간 관련 경고창 출력
+	$("#exampleModalCenter").modal();
+	
+	
+	
+	// 택배사 목록 조회 company-api
+   	$.ajax({
+        type:"GET",
+        dataType : "json",
+        url:"http://info.sweettracker.co.kr/api/v1/companylist",
+        data: {
+        	t_key : myKey
+        },
+        success: data => {
+        		
+      		var CompanyArray = data.Company; // Json Array에 접근하기 위해 Array명 Company 입력
+      		console.log(CompanyArray); 
+      		
+      		var myData="<option>택배회사명</option>";
+      		$.each(CompanyArray,function(key,value) {
+          			myData += ('<option value='+value.Code+'>'+value.Name + '</option>');        				
+      		});
+      		
+      		$("#deliveryCompnayList").html(myData);
+        }
+    });
+	
+ 	// 배송정보와 배송추적 tracking-api
+    $("#myButton1").click(function() {
+    	
+    	var t_code = $('#deliveryCompnayList option:selected').attr('value');
+    	var t_invoice = $('#invoiceNumberText').val();
+    	
+    	//CJ대한통운인경우, 숫자아닌 문자제거
+    	if(t_code == '04'){
+    		t_invoice = t_invoice.replace(/\W/g, "");
+    		$('#invoiceNumberText').val(t_invoice);
+    	}
+    	
+    	
+        $.ajax({
+            type:"GET",
+            dataType : "json",
+            url:"http://info.sweettracker.co.kr/api/v1/trackingInfo",
+            data: {
+            	t_key: myKey,
+            	t_code: t_code,
+            	t_invoice: t_invoice
+            },
+            success:function(data){
+            	console.log(data);
+            	var myInvoiceData = "";
+            	if(data.status == false){
+            		myInvoiceData += ('<p>'+data.msg+'<p>');
+            	}else{
+            		myInvoiceData += ('<tr>');            	
+            		myInvoiceData += ('<th>'+"보내는사람"+'</td>');     				
+            		myInvoiceData += ('<th>'+data.senderName+'</td>');     				
+            		myInvoiceData += ('</tr>');     
+            		myInvoiceData += ('<tr>');            	
+            		myInvoiceData += ('<th>'+"제품정보"+'</td>');     				
+            		myInvoiceData += ('<th>'+data.itemName+'</td>');     				
+            		myInvoiceData += ('</tr>');     
+            		myInvoiceData += ('<tr>');            	
+            		myInvoiceData += ('<th>'+"송장번호"+'</td>');     				
+            		myInvoiceData += ('<th>'+data.invoiceNo+'</td>');     				
+            		myInvoiceData += ('</tr>');     
+            		myInvoiceData += ('<tr>');            	
+            		myInvoiceData += ('<th>'+"송장번호"+'</td>');     				
+            		myInvoiceData += ('<th>'+data.receiverAddr+'</td>');     				
+            		myInvoiceData += ('</tr>');           	                		
+            	}
+    			
+            	
+            	$("#tbl-invoice").html(myInvoiceData)
+            	
+            	var trackingDetails = data.trackingDetails;
+            	
+            	
+        		var header ="<thead>";
+        		header += '<tr>';            	
+        		header += '<th>'+"시간"+'</th>';
+        		header += '<th>'+"장소"+'</th>';
+        		header += '<th>'+"유형"+'</th>';
+        		header += '<th>'+"전화번호"+'</th>';     				
+    			header += '</tr>';     
+    			header += '</thead>';     
+        		
+        		var myTracking = "<tbody>";
+        		$.each(trackingDetails,function(key,value) {
+            		myTracking += ('<tr>');            	
+        			myTracking += ('<td>'+value.timeString+'</td>');
+        			myTracking += ('<td>'+value.where+'</td>');
+        			myTracking += ('<td>'+value.kind+'</td>');
+        			myTracking += ('<td>'+value.telno+'</td>');     				
+            		myTracking += ('</tr>');        			            	
+        		});
+           		myTracking += '</tbody>';        			            	
+        		
+        		$("#tbl-tracking").html(header+myTracking);
+            	
+            }
+        });
+    });
+});
+
+</script>
+
+</body>
+</html>
