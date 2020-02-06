@@ -4,14 +4,18 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -67,17 +71,19 @@ public class SummernoteController {
 		List<Summernote> list = summernoteService.findAll();
 		
 		/*목록에 뿌려주기 위한 contents작업 : html->text, 글자수제한*/
-		list.stream()
-			.peek(summernote -> {
-				String contents = summernote.getContents()
-											.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " ");
-				if(contents.length() > 10) 
-					contents = contents.substring(0, 10);
-				
-				summernote.setContents(contents);
-				
-			})
-			.forEach(s->{});//의미 없는 최종연산(Terminal Operation)
+		list = list
+				.stream()
+			    .filter(s -> !"temp".equals(s.getWriter())) //임시파일제외
+				.peek(summernote -> {
+					String contents = summernote.getContents()
+												.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " ");//html태그 제외하고 목록에 보여주기
+					if(contents.length() > 10) 
+						contents = contents.substring(0, 10);
+					
+					summernote.setContents(contents);
+					
+				})
+				.collect(Collectors.toList());//TerminalOperation 
 		
 		model.addAttribute("list", list);
 		
@@ -97,19 +103,14 @@ public class SummernoteController {
 	 */
 	@PostMapping("/summernote/insert")
 	public String summernoteInsert(Model model, 
-								   @RequestParam("writer") String writer,
-								   @RequestParam("contents") String contents,
+								   @ModelAttribute Summernote summernote,
 								   @RequestParam(value="file", required=false) MultipartFile file,
 								   RedirectAttributes redirectAttributes) {
 		logger.debug("{}", "[/insertSummernote.do] : 게시글 등록 요청");
-		logger.debug("writer={}", writer);
-		logger.debug("contents={}", contents);
+		logger.debug("summernote={}", summernote);
 		logger.debug("file={}", file);//null
 		
-		
-		Summernote summernote = new Summernote();
-		summernote.setWriter(writer);
-		summernote.setContents(contents);
+		//현재시각 대입
 		summernote.setRegDate(new Date());
 		
 		logger.debug("note={}",summernote);
@@ -171,15 +172,34 @@ public class SummernoteController {
 	@PostMapping("/summernote/s3/image")
     @ResponseBody
     public ResponseEntity<?> handleFileUploadViaS3(@RequestParam("file") MultipartFile file,
-    										  HttpServletRequest request) {
+    											   @RequestParam("id") Long id,
+    											   HttpServletRequest request) {
+		logger.debug("{}", "[/summernote/s3/image] : 이미지 s3 업로드 요청!");
 		String saveDirectory = request.getSession().getServletContext().getRealPath("/upload");
+		
+		logger.debug("id={}", id);
+		
+		//첨부파일 저장을 위해 우선 게시글 번호 생성
+		if(id == 0) {
+			Summernote summernote = new Summernote();
+			summernote.setWriter("temp");//필수 항목
+			summernote = summernoteService.save(summernote);
+			logger.debug("id={}", summernote.getId());		
+			id = summernote.getId();
+		}
+		
 		
         try {
         
         	S3Object s3obj = awsService.store(saveDirectory, file);
         	logger.debug("s3obj={}", s3obj);
         	
-            return ResponseEntity.ok().body(s3obj.getResourceUrl());
+        	Map<String, Object> map = new HashMap<>();
+        	map.put("id",id);
+        	map.put("insertImage",s3obj.getResourceUrl());
+        	return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+        	
+//            return ResponseEntity.ok().body(s3obj.getResourceUrl());
             
         } catch (Exception e) {
             e.printStackTrace();

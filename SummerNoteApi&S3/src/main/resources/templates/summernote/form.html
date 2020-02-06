@@ -27,13 +27,14 @@ $(()=> {
 function sendFile(file, el) {
 	console.log("el=",el);//<textarea id="summernote" name="summernote" style="display: none;"></textarea>
 	
-    var form_data = new FormData();
-    form_data.append('file', file);//file -> handler에서 접근할 전송파일명 
+    var formData = new FormData();
+    formData.append('file', file);//file -> handler에서 접근할 전송파일명 
+    formData.append('id', $("#id").val());
     
    	let ctx = /*[[@{/}]]*/; // script태그 안에서 ctx-path 표현하기 : "\/spring\/"으로 치환됨
 
    	$.ajax({
-      data: form_data,
+      data: formData,
       type: "POST",
       //url: ctx+'summernote/image',
       url: ctx+'summernote/s3/image',
@@ -46,7 +47,8 @@ function sendFile(file, el) {
     	
         //$(el).summernote('editor.insertImage', ctx+data);
         //aws s3에 업로드시
-        $(el).summernote('editor.insertImage', data);
+        $(el).summernote('editor.insertImage', data.insertImage);
+        $("#id").val(data.id);
       }
     });
   }
@@ -69,7 +71,8 @@ function sendFile(file, el) {
 	
 	<div class="summernote-container">
 		<form th:action="@{/summernote/insert}" method="post" enctype="multipart/form-data">
-			
+			<input type="hidden" name="id" id="id" value="0"/> <!-- 초기값 0으로 설정 -->
+					
 			<!-- 글쓴이 input태그 -->
 			<div class="input-group flex-nowrap">
 			  <div class="input-group-prepend">
