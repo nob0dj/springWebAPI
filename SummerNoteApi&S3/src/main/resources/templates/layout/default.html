@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	  
+<!-- 1.headFragment로 head -->	  
+<!-- <head th:replace="fragments/head::headFragment"> -->
+<head>
+	<!-- 페이지별 타이틀 부여하기: layout페이지에 작성해야함.-->
+	<!-- $LAYOUT_TITLE : 전페이지 공통-->
+	<!-- $CONTENT_TITLE : 페이지별 타이틀-->
+	<title layout:title-pattern="$LAYOUT_TITLE :: $CONTENT_TITLE">Thymeleaf</title>
+	
+	
+	<!-- include는 fragment태그의 자식태그만 가져옴-->
+	<th:block th:include="fragments/head::headFragment"></th:block>
+</head>
+<body>
+<div id="container">
+	<!-- 일반 html태그에 대하여 include/replace는 fragment태그를 제외하고 가져온다. insert는 fragment태그 포함 -->
+	<header th:include="fragments/header::headerFragment"></header>
+	
+	<section id="content">
+		<!-- 각 페이지의 컨텐츠가 삽입될 부분 -->
+		<div layout:fragment="content"></div>
+	</section>
+	
+	<footer th:replace="fragments/footer::footerFragment"></footer>
+</div>
+</body>
+</html>

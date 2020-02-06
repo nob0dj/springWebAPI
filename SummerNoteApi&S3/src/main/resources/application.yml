@@ -1,0 +1,37 @@
+#application.yml
+server:
+  port: 9999
+  servlet:
+    context-path: /spring
+   
+#logging
+logging:
+  level:
+    com.kh.spring: DEBUG
+  
+  
+   
+#db
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    username: spring
+    password: spring
+  jpa:
+    show-sql: true
+#    generate-ddl: true #시작시 스키마 초기화 여부
+    database: oracle #multiple db를 사용할 경우, 각각에 알맞은 dialect사용
+#    hibernate:
+#      ddl-auto: create  
+   
+   
+#file-upload
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+      file-size-threshold: 0
+        
+        
+        

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorator="layout/default">
+	  
+<head>
+<title th:text="${pageTitle}"></title>
+
+<style>
+.summernote-container {
+	width: 80%;
+	margin: 0 auto;
+	padding: 10px;
+}
+
+tbody tr {
+	cursor: pointer;
+}
+</style>
+<script th:inline="javascript">
+function goPage(id){
+	let ctx = /*[[@{/}]]*/;
+	location.href = ctx + "summernote/view/"+id;
+}
+</script>
+</head>
+<body>
+<!-- layout:fragment="content"외의 태그는 모두 제거됨 -->
+<div layout:fragment="content">
+	
+	<div class="summernote-container">
+		<table class="table table-hover">
+		  <thead>
+		    <tr>
+		      <th scope="col">No.</th>
+		      <th scope="col">글쓴이</th>
+		      <th scope="col" class="contents">내용</th>
+		      <th scope="col">작성일</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+			<tr scope="row" th:each="s:${list}" th:onclick="goPage([[${s.id}]]);">
+				<td th:text="${s.id}"></td>
+				<td th:text="${s.writer}"></td>
+				<!-- unescapedtext를 사용 -->
+				<td th:text="${s.contents}"></td>
+				<td th:text="${s.regDate}"></td>
+			</tr>
+		   
+		  </tbody>
+		</table>
+	</div>
+
+	
+</div>
+</body>
+</html>
