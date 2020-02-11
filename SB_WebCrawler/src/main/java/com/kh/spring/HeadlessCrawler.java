@@ -11,10 +11,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class HeadlessCrawler {
+  
+  Logger logger = LoggerFactory.getLogger(getClass());
+	
   private WebDriver driver;
   protected static DesiredCapabilities dCaps;
 
@@ -55,6 +60,31 @@ public class HeadlessCrawler {
 	    
 	    System.out.println(list);
 	    return  list;
+  }
+
+  public List<Map<String,String>> getTicketInfo(String url) {
+	  logger.info("getTicketInfo({})",url);
+	  
+	  List<Map<String,String>> list = new ArrayList<>();
+	  driver.get(url);
+	  
+	  logger.info("driver={}", driver);
+	  logger.info("{}",driver.getPageSource());
+	  
+	  //이벤트정보가 담기 table의 클래스명 tbl_ltype1으로 조회함. 
+	  
+	  WebElement parent = driver.findElement(By.cssSelector("#target_ranking1 ul"));
+	  List<WebElement> children = parent.findElements(By.tagName("li"));
+	  
+	  logger.info("li개수={}", children.size());
+	  for(int i = 0; i<children.size();i++){
+		  Map<String, String> map = new HashMap<>();		  
+		  map.put("a", children.get(i).toString());//이미지
+		  list.add(map);
+	  }
+	  
+	  System.out.println(list);
+	  return  list;
   }
 
 

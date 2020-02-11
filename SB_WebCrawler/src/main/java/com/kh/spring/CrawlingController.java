@@ -44,4 +44,15 @@ public class CrawlingController {
 		return data;
 
 	}
+
+	@RequestMapping("/crawling/interpark")
+	@ResponseBody
+	public List<Map<String,String>> crawlingToInterpark(){
+		
+		String url = "http://ticket.interpark.com/";
+		List<Map<String,String>> data = headlessCrawler.getTicketInfo(url);
+		
+		return data;
+		
+	}
 }
