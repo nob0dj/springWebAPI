@@ -26,9 +26,10 @@ public class StompConfigurer extends AbstractWebSocketMessageBrokerConfigurer{
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry.addEndpoint("/stomp")
 				.withSockJS()
-				.setInterceptors(new HttpSessionHandshakeInterceptor());
-		
+				.setInterceptors(new HttpSessionHandshakeInterceptor())
+				.setClientLibraryUrl( "https://cdn.jsdelivr.net/npm/sockjs-client@1.3.0/dist/sockjs.min.js" ); //Added
 	}
+		
 
 	
 	/**

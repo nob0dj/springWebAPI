@@ -139,7 +139,12 @@ public class StompController {
 
 		return fromMessage; 
 	}
-	
+	/**
+	 * 읽음 여부 확인을 위해 최종 focus된 시각정보를 수집한다.
+	 * 
+	 * @param fromMessage
+	 * @return
+	 */
 	@MessageMapping("/lastCheck")
 	@SendTo(value={"/chat/admin"})
 	public Msg lastCheck(@RequestBody Msg fromMessage){

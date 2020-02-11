@@ -51,7 +51,7 @@ stompClient.connect({}, function(frame) {
 });
 
 function goChat(chatId){
-	open("${pageContext.request.contextPath}/ws/adminChat.do/"+chatId, chatId, "width=500, height=500", false);
+	open("${pageContext.request.contextPath}/ws/"+chatId+"/adminChat.do/", chatId, "width=500, height=500", false);
 }
 </script>
 <jsp:include page="/WEB-INF/views/common/footer.jsp"></jsp:include>

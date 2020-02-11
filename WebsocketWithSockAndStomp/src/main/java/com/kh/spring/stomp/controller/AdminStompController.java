@@ -46,7 +46,7 @@ public class AdminStompController {
 	}
 	
 	
-	@GetMapping("/ws/adminChat.do/{chatId}")
+	@GetMapping("/ws/{chatId}/adminChat.do")
 	public String adminChat(@PathVariable("chatId") String chatId, Model model){
 		
 		List<Msg> chatList = stompService.findChatListByChatId(chatId);
