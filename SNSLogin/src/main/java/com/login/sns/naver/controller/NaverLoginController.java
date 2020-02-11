@@ -49,7 +49,23 @@ public class NaverLoginController {
 //			token_type=bearer, 
 //			expires_in=3600, 
 //			refresh_token=dZyoqiiiicj0LCkip0Bfd7jVqSipfJavoKLra9cfJzqN32v8HGU93fAA5MisaLMVtUh4vwJKissEh6HDrGiir1fyPbxevhFfZIPXlVnS7wjjipRuCtqg7Robd33fpGjT5039hERw, 
-//			scope=null}
+//			scope=null
+		
+		System.out.println("=====================================");
+		System.out.println("accessToken="+oauthToken.getAccessToken());
+		System.out.println("refreshToken="+oauthToken.getRefreshToken());
+		System.out.println("expireIn="+oauthToken.getExpiresIn());
+		System.out.println("rawResponse="+oauthToken.getRawResponse());
+		System.out.println("=====================================");
+		
+		/*
+		 	=====================================
+			accessToken=AAAAOjpIKvKHoRu9rrwC2yZxVUvBgvUt-AHX9PMlabLq3mlZt_vEpgoEMGED5tgz-RfsLAeuz1hqUSXyryHM160CtJ4
+			refreshToken=dZyoqiiiicj0LCkip0Bfd7jVqSipfJavoKLra9cfJzqN32v8HGU93fAA5MisaLMVtUh4vwJKissEh6HDrGiir1fyPbxevhFfZIPXlVnS7wjjipRuCtqg7Robd33fpGjT5039hERw
+			expireIn=3600
+			rawResponse={"access_token":"AAAAOjpIKvKHoRu9rrwC2yZxVUvBgvUt-AHX9PMlabLq3mlZt_vEpgoEMGED5tgz-RfsLAeuz1hqUSXyryHM160CtJ4","refresh_token":"dZyoqiiiicj0LCkip0Bfd7jVqSipfJavoKLra9cfJzqN32v8HGU93fAA5MisaLMVtUh4vwJKissEh6HDrGiir1fyPbxevhFfZIPXlVnS7wjjipRuCtqg7Robd33fpGjT5039hERw","token_type":"bearer","expires_in":"3600"}
+			=====================================
+		 */
 		
 		//session 속성에 저장된 값 확인
 		System.out.println("-------------------------------------------");
@@ -59,6 +75,12 @@ public class NaverLoginController {
 			System.out.printf("%s = %s \n", key, session.getAttribute(key));
 		}
 		System.out.println("-------------------------------------------");
+		/*
+		 	-------------------------------------------
+			oauth_state = ba6ac8e4-c177-403c-86cc-7f2f7596442b 
+			-------------------------------------------
+		 */
+		
 		/*사용자프로필 조회*/
 		String apiResult = naverLoginBO.getUserProfile(oauthToken);
 		
