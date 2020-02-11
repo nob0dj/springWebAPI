@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorator="layout/default">
+	  
+<head>
+<title th:text="${pageTitle}"></title>
+
+<style>
+.summernote-container {
+	width: 80%;
+	margin: 0 auto;
+	padding: 10px;
+}
+
+tbody tr .key {
+	cursor: pointer;
+}
+</style>
+<script th:inline="javascript">
+function openFile(key){
+	open("https://shqkel1863-summernote.s3.ap-northeast-2.amazonaws.com/"+key);	
+}
+$(()=>{
+	$("#s3ListAll").change(e=>{
+		let checked = $(e.target).prop("checked");
+		
+		$("[name=s3key]").prop("checked", checked);
+	});
+	
+	$("#s3keyDelFrm").submit(e => {
+		let $s3keyChecked = $("[name=s3key]:checked");
+		
+		if($s3keyChecked.length == 0) 
+			e.preventDefault();
+		
+		if(!confirm("파일을 삭제하면, 해당게시글에서 이미지를 참조할 수 없습니다. 그래도 삭제하시겠습니까?"))
+			e.preventDefault();
+		
+	});
+});
+
+</script>
+</head>
+<body>
+<!-- layout:fragment="content"외의 태그는 모두 제거됨 -->
+<div layout:fragment="content">
+  <form th:action="@{/summernote/s3/delete}" id="s3keyDelFrm" method="POST">
+	<div class="summernote-container">
+		<table class="table table-hover">
+		  <thead>
+		    <tr>
+		      <th scope="col">No.</th>
+		      <th scope="col"><input type="checkbox" id="s3ListAll" /></th>
+		      <th scope="col">파일명(key)</th>
+		      <th scope="col">파일크기(byte)</th>
+		      <th scope="col">등록일</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+			<tr scope="row" th:each="s3,status:${list}" >
+				<td th:text="${status.index+1}"></td>
+				<td><input type="checkbox" name="s3key" th:value="${s3.key}"/></td>
+				<td class="key" th:onclick="openFile([[${s3.key}]]);" th:text="${s3.key}"></td>
+				<td th:text="${s3.size}"></td>
+				<td th:text="${#dates.format(s3.lastModified, 'yyyy-MM-dd HH:mm')}"></td>
+			</tr>
+		   
+		  </tbody>
+		</table>
+		<button type="submit" class="btn btn-outline-danger btn-lg btn-block">선택파일삭제</button>
+	</div>
+  </form>	
+</div>
+</body>
+</html>

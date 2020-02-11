@@ -38,5 +38,6 @@ public class SummernoteServiceImpl implements SummernoteService {
 //		return summernoteRepository.findAll(new Sort(Sort.Direction.DESC, "id"));
 		return summernoteRepository.findAllByOrderByIdDesc();
 	}
-	
+
+
 }

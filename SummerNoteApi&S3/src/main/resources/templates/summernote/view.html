@@ -25,34 +25,55 @@ $(()=> {
 	
 });
 
-function sendFile(file, el) {
-	console.log("el=",el);//<textarea id="summernote" name="summernote" style="display: none;"></textarea>
-	
-    var formData = new FormData();
-    formData.append('file', file);//file -> handler에서 접근할 전송파일명
-    formData.append('id', $("#id").val());
-    
-   	let ctx = /*[[@{/}]]*/; // script태그 안에서 ctx-path 표현하기 : "\/spring\/"으로 치환됨
+let ctx = /*[[@{/}]]*/; // script태그 안에서 ctx-path 표현하기 : "\/spring\/"으로 치환됨
 
-   	$.ajax({
-      data: formData,
-      type: "POST",
-      //url: ctx+'image',
-      url: ctx+'summernote/s3/image',
-      cache: false,
-      contentType: false,
-      enctype: 'multipart/form-data',
-      processData: false,
-      success: function(data) {
-    	console.log("data =",data);
-        //$(el).summernote('editor.insertImage', ctx+data);
-        
-        //aws s3 업로드 이후
-        $(el).summernote('editor.insertImage', data.insertImage);
-        
-      }
-    });
-  }
+function sendFile(file, el) {
+console.log("el=",el);//<textarea id="summernote" name="summernote" style="display: none;"></textarea>
+
+   var formData = new FormData();
+   formData.append('file', file);//file -> handler에서 접근할 전송파일명
+   formData.append('id', $("#id").val());
+   
+
+  	$.ajax({
+  		
+		data: formData,
+		type: "POST",
+		//url: ctx+'image',
+		url: ctx+'summernote/s3/image',
+		cache: false,
+		contentType: false,
+		enctype: 'multipart/form-data',
+		processData: false,
+		success: function(data) {
+			console.log("data =",data);
+			//$(el).summernote('editor.insertImage', ctx+data);
+			
+			//aws s3 업로드 이후
+			$(el).summernote('editor.insertImage', data.insertImage);
+       
+     	}
+	});
+}
+  
+/**
+ * thymeleaf에 사용된 사용자 속성명은 모두 소문자로 처리된다.
+ * s3에서 resourceurl로 파일을 다운로드하는 api는 없다.
+ * bucketname, 저장된  폴더명, key값(저장된 파일명)이 필요하다.
+ */
+function fileDownload(a){
+	const oname = $(a).attr("data-oname");
+	const rname = $(a).attr("data-rname");
+	console.log(oname, rname);
+	
+	location.href = ctx 
+				  + "summernote/s3/images/download"
+				  + "?oname="+oname
+				  + "&summernoteid=[[${summernote.id}]]"
+				  + "&rname="+rname;
+}
+ 
+ 
 </script>
 <style>
 .summernote-container {
@@ -63,6 +84,10 @@ function sendFile(file, el) {
 #writer, #regDate, #btn-update {
 	margin-top: 10px;
 	margin-bottom: 10px;
+}
+ul#fileList-container {
+	list-style: none;
+	padding-left: 20px;
 }
 </style>
 </head>
@@ -87,7 +112,7 @@ function sendFile(file, el) {
 			<!-- <div id="summernote">Hello Summernote</div> -->
 			<textarea id="summernote" name="contents" th:text="*{contents}"></textarea>
 			
-			<input type="date" class="form-control" name="regDate" id="regDate" th:value="*{regDate}"/>
+			<input type="datetime-local" class="form-control" name="regDate" id="regDate" th:value="*{#dates.format(regDate, 'yyyy-MM-dd''T''HH:mm:ss')}" readonly/>
 			
 			<!-- submit 버튼 : button태그의 기본 type속성은 submit이다.-->
 			<button class="btn btn-outline-info btn-block" id="btn-update">수정</button>
@@ -97,6 +122,12 @@ function sendFile(file, el) {
 			<button class="btn btn-outline-danger btn-block" id="btn-delete">삭제</button>
 		</form>
 		
+		<hr th:if="${!summernote.fileList.empty}"/>
+		<h4 th:if="${!summernote.fileList.empty}">첨부파일</h4>
+		<ul th:each="f:${summernote.fileList}" id="fileList-container">
+			<li><a href="#" onclick="fileDownload(this);" th:data-rname="${f.renamedFileName}" th:data-oname="${f.originalFileName}" th:text="${f.originalFileName}"></a></li>
+		</ul>
+	
 		
 	</div>
 

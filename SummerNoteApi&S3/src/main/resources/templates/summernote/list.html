@@ -43,7 +43,7 @@ function goPage(id){
 				<td th:text="${s.id}"></td>
 				<td th:text="${s.writer}"></td>
 				<!-- unescapedtext를 사용 -->
-				<td th:text="${s.contents}"></td>
+				<td th:utext="${s.contents}"></td>
 				<td th:text="${s.regDate}"></td>
 			</tr>
 		   

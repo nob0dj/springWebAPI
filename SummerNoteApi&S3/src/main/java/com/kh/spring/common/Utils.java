@@ -19,7 +19,7 @@ public class Utils {
 		int rndNum = (int)(Math.random()*1000);
 		String renamedFileName = sdf.format(new Date(System.currentTimeMillis()))+"_"+rndNum+ext;
 		
-		logger.debug("생성된 파일명 = {}", renamedFileName);
+		logger.debug("생성된 파일명 = {} =>  {}", originalFileName, renamedFileName);
 		
 		return renamedFileName;
 	}

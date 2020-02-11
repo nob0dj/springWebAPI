@@ -2,6 +2,8 @@ package com.kh.spring.summernote.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,11 +27,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.kh.spring.aws.model.service.AWSService;
 import com.kh.spring.aws.model.vo.S3Object;
 import com.kh.spring.summernote.model.service.SummernoteService;
@@ -73,7 +79,7 @@ public class SummernoteController {
 		/*목록에 뿌려주기 위한 contents작업 : html->text, 글자수제한*/
 		list = list
 				.stream()
-			    .filter(s -> !"temp".equals(s.getWriter())) //임시파일제외
+			    .filter(s -> !s.getTempFlag())//임시파일제외
 				.peek(summernote -> {
 					String contents = summernote.getContents()
 												.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " ");//html태그 제외하고 목록에 보여주기
@@ -94,6 +100,9 @@ public class SummernoteController {
 	/**
 	 * 글쓰기 등록
 	 * 
+	 * 새로운 커맨드객체 생성시 tempFlag는 기본값 false로 지정되므로, 
+	 * 이미지 업로드시에 생성된 행(tempFlag=true)는 덮어써지게 된다.
+	 * 
 	 * @param model
 	 * @param writer
 	 * @param contents
@@ -104,11 +113,11 @@ public class SummernoteController {
 	@PostMapping("/summernote/insert")
 	public String summernoteInsert(Model model, 
 								   @ModelAttribute Summernote summernote,
-								   @RequestParam(value="file", required=false) MultipartFile file,
+								   //@RequestParam(value="files", required=false) MultipartFile files,
 								   RedirectAttributes redirectAttributes) {
 		logger.debug("{}", "[/insertSummernote.do] : 게시글 등록 요청");
 		logger.debug("summernote={}", summernote);
-		logger.debug("file={}", file);//null
+//		logger.debug("files={}", files);
 		
 		//현재시각 대입
 		summernote.setRegDate(new Date());
@@ -136,8 +145,6 @@ public class SummernoteController {
     public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file,
     										  HttpServletRequest request) {
         try {
-//            UploadFile uploadedFile = imageService.store(file);
-        	
         	logger.debug("file={}", file);
 
         	//파일 저장경로
@@ -182,17 +189,21 @@ public class SummernoteController {
 		//첨부파일 저장을 위해 우선 게시글 번호 생성
 		if(id == 0) {
 			Summernote summernote = new Summernote();
-			summernote.setWriter("temp");//필수 항목
+			summernote.setTempFlag(true);
 			summernote = summernoteService.save(summernote);
-			logger.debug("id={}", summernote.getId());		
+			logger.debug("summernote={}", summernote);		
 			id = summernote.getId();
 		}
 		
 		
         try {
         
-        	S3Object s3obj = awsService.store(saveDirectory, file);
+        	//s3에 파일 업로드
+//        	S3Object s3obj = awsService.store(saveDirectory, id, file);
+        	S3Object s3obj = awsService.storeWithoutTempFile(saveDirectory, id, file);	
         	logger.debug("s3obj={}", s3obj);
+        	
+        	
         	
         	Map<String, Object> map = new HashMap<>();
         	map.put("id",id);
@@ -221,6 +232,8 @@ public class SummernoteController {
 		model.addAttribute("pageSubTitle", "상세보기|수정");
 		Optional<Summernote> maybeSummernote = summernoteService.findById(id);
 		model.addAttribute("summernote", maybeSummernote.get());
+		
+		logger.debug("{}", maybeSummernote.get());
 		
 		return "summernote/view";
 	}
@@ -259,9 +272,77 @@ public class SummernoteController {
 		logger.debug("{}", "[/summernote/"+id+"] : summernote 삭제  요청!");
 		
 		summernoteService.deleteById(id);
+		
+		//s3파일 삭제 및 db데이터 삭제처리
+		awsService.deleteBySummernoteId(id);
+		
 		redirectAttributes.addFlashAttribute("msg", "삭제성공!" );
 		
 		return "redirect:/summernote/list";
 	}
 	
+	
+	@GetMapping("/summernote/s3/images/download")
+	@ResponseBody
+	public ResponseEntity<Resource> handleFileDownload(@RequestParam("oname") String originalFileName,
+													   @RequestParam("summernoteid") String summernoteId, 
+													   @RequestParam("rname") String renamedFileName,
+													   @RequestHeader("User-Agent")String userAgent){
+		
+		logger.debug("{}, {}, {}", "[/summernote/s3/images/download] : 파일다운로드 요청!", originalFileName, renamedFileName);
+		
+		Resource resource = awsService.loadFileAsResource(summernoteId, renamedFileName);
+		
+		HttpHeaders headers = new HttpHeaders();
+		try {
+			String resFileName = null;
+			//user-Agent의 정보를 파라미터로 받아 브라우저별 처리
+			//IE 브라우저 엔진 이름 조회
+			if(userAgent.contains("Trident")) {	
+				resFileName = URLEncoder.encode(originalFileName, "UTF-8").replaceAll("\\+","%20");
+			}
+			else if(userAgent.contains("Edge")) {
+				resFileName = URLEncoder.encode(originalFileName, "UTF-8");
+			}
+			// 크롬 등 표준 브라우져
+			else{	
+				resFileName = new String(originalFileName.getBytes("UTF-8"), "ISO-8859-1");
+			}
+			logger.debug("resFileName={}",resFileName);
+			
+			headers.add("Content-Disposition", "attachment; filename="+resFileName);
+			
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/summernote/s3/list")
+	public String summernoteS3ObjectList(Model model) {
+		logger.debug("{}", "[/summernote/s3/list] : s3파일 목록 요청!");
+		model.addAttribute("pageSubTitle", "S3 파일 목록");
+		
+		List<S3ObjectSummary> list = awsService.findAll();
+		
+		
+		model.addAttribute("list", list);
+		
+		return "summernote/s3List";
+	} 
+
+	@PostMapping("/summernote/s3/delete")
+	public String summernoteS3ObjectDelete(Model model,
+										   RedirectAttributes redirectAttributes,
+										   @RequestParam("s3key") String[] s3keys) {
+		logger.debug("{}", "[/summernote/s3/delete] : s3파일 삭제 요청!");
+		
+		awsService.deleteObject(s3keys);
+		
+		redirectAttributes.addFlashAttribute("msg", "삭제성공!" );
+		
+		return "redirect:/summernote/s3/list";
+	} 
 }
