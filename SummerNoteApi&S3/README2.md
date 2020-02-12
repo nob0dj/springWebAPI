@@ -71,8 +71,10 @@ console 최상위에서 허용을 해야 bucket별, 폴더별, 파일(객체)별
     }
 
 @com.kh.spring.aws.model.vo.S3Object
+
 파일첨부 관련 정보를 가진 vo
-`@Data` => A shortcut for @ToString, @EqualsAndHashCode, @Getter on all fields, @Setter on all non-final fields, and @RequiredArgsConstructor!
+
+`@Data` => `A shortcut for @ToString, @EqualsAndHashCode, @Getter on all fields, @Setter on all non-final fields, and @RequiredArgsConstructor!`
 [https://projectlombok.org/features/Data](https://projectlombok.org/features/Data)
 
 **컬럼명과 필드명이 다르다면, 반드시 @Column의 name속성을 명시한다.**
@@ -320,10 +322,10 @@ originalFileName과 renamedFileName은 S3Object에서 수집된후 db files테�
 * fileSizeThreshold - 업로드하는 파일이 임시로 파일로 저장되지 않고 메모리에서 바로 스트림으로 전달되는 크기의 한계를 나타낸다. 디폴트 값: 0 => springboot 동일
 
 
-    #file-upload
-    spring: 
-      servlet:
-        multipart:
-          max-file-size: 50MB
-          max-request-size: 50MB
-          file-size-threshold: 0
+      #file-upload
+      spring: 
+        servlet:
+          multipart:
+            max-file-size: 50MB
+            max-request-size: 50MB
+            file-size-threshold: 0

@@ -9,22 +9,22 @@ jpa가 지원하는 ddl-auto 기능을 사용할 수도 있지만, 직접 db설�
 spring계정으로 진행. 
 sequence는 @Id컬럼에 따로 지정안하는 경우, jpa의 hibernate_sequence객체를 이용하게 된다.
 
-  --==============================================================
-  -- summernote테이블 생성
-  --==============================================================
-  create table summernote(
-    id number,
-    writer varchar2(256),                   --글쓴이: not null처리 안함
-    contents clob,                          --내용: not null처리 안함
-    reg_date date default sysdate,
-    is_temp char(1) default 'N',            --임시파일여부
-    constraint pk_summernote primary key(id),
-    constraint ck_summernote check(is_temp in('Y','N'))
-  );
+    --==============================================================
+    -- summernote테이블 생성
+    --==============================================================
+    create table summernote(
+      id number,
+      writer varchar2(256),                   --글쓴이: not null처리 안함
+      contents clob,                          --내용: not null처리 안함
+      reg_date date default sysdate,
+      is_temp char(1) default 'N',            --임시파일여부
+      constraint pk_summernote primary key(id),
+      constraint ck_summernote check(is_temp in('Y','N'))
+    );
 
-  create sequence seq_summernote;
+    create sequence seq_summernote;
 
-  select * from summernote order by id desc;
+    select * from summernote order by id desc;
 
 
 ## 프로젝트 설정
@@ -290,33 +290,33 @@ summernote api 적용
 
 @com.kh.spring.summernote.model.service.SummernoteService
 
-  public interface SummernoteService {
+    public interface SummernoteService {
 
-    Summernote save(Summernote note);
+      Summernote save(Summernote note);
 
-  }
+    }
 
 @com.kh.spring.summernote.model.service.SummernoteServiceImpl
 
-  @Service
-  public class SummernoteServiceImpl implements SummernoteService {
+    @Service
+    public class SummernoteServiceImpl implements SummernoteService {
 
-    @Autowired
-    SummernoteRepository summernoteRepository;
+      @Autowired
+      SummernoteRepository summernoteRepository;
 
-    @Override
-    public Summernote save(Summernote note) {
-      return summernoteRepository.save(note);
+      @Override
+      public Summernote save(Summernote note) {
+        return summernoteRepository.save(note);
+      }
+
     }
-
-  }
 
 @com.kh.spring.summernote.model.repository.SummernoteRepository
 `@Repository` 어노테이션 생략가능
 
-  public interface SummernoteRepository extends JpaRepository<Summernote, Long> {
+    public interface SummernoteRepository extends JpaRepository<Summernote, Long> {
 
-  }
+    }
 
 
 @Test
@@ -327,23 +327,23 @@ summernote api 적용
 @com.kh.spring.summernote.controller.SummernoteController
 
 
-  /**
-	 * 상세보기 페이지 
-	 * 
-	 * @param model
-	 * @param id
-	 * @return
-	 */
-	@GetMapping("/summernote/view/{id}")
-	public String summernoteView(Model model, @PathVariable("id") Long id) {
-		logger.debug("{}", "[/summernote/"+id+"] : summernote 상세보기 페이지 요청!");
-		
-		model.addAttribute("pageSubTitle", "상세보기|수정");
-		Optional<Summernote> maybeSummernote = summernoteService.findById(id);
-		model.addAttribute("summernote", maybeSummernote.get());
-		
-		return "summernote/view";
-	}
+    /**
+    * 상세보기 페이지 
+    * 
+    * @param model
+    * @param id
+    * @return
+    */
+    @GetMapping("/summernote/view/{id}")
+    public String summernoteView(Model model, @PathVariable("id") Long id) {
+      logger.debug("{}", "[/summernote/"+id+"] : summernote 상세보기 페이지 요청!");
+      
+      model.addAttribute("pageSubTitle", "상세보기|수정");
+      Optional<Summernote> maybeSummernote = summernoteService.findById(id);
+      model.addAttribute("summernote", maybeSummernote.get());
+      
+      return "summernote/view";
+    }
 
 @com.kh.spring.summernote.model.service.SummernoteService
 
@@ -353,10 +353,10 @@ summernote api 적용
 CRUDRepository인터페이스의 추상메소드를 호출함. 이후 Repository 단에서 작성코드 없음.
 
 
-  @Override
-	public Optional<Summernote> findById(Long id) {
-		return summernoteRepository.findById(id);
-	}
+    @Override
+    public Optional<Summernote> findById(Long id) {
+      return summernoteRepository.findById(id);
+    }
 
 
 
@@ -469,17 +469,17 @@ view model의 속성 summernote를 화면 출력함.
 
 @com.kh.spring.summernote.model.service.SummernoteService
 
-  List<Summernote> findAll();
+    List<Summernote> findAll();
 
 
 @com.kh.spring.summernote.model.service.SummernoteServiceImpl
 정렬처리를 위해 Sort객체를 이용함.
 메소드명을 `findAllByOrderByIdDesc()`와 같이 설정해도 가능하다.
 
-  @Override
-	public List<Summernote> findAll() {
-		return summernoteRepository.findAll(new Sort(Sort.Direction.DESC, "id"));
-	}
+    @Override
+    public List<Summernote> findAll() {
+      return summernoteRepository.findAll(new Sort(Sort.Direction.DESC, "id"));
+    }
 
 
 @src/main/resources/templates/summernote/list.html
