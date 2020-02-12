@@ -185,40 +185,40 @@ summernote api 적용
 별도의 사용자 msg전달 페이지 없이 RedirectAttributes를 이용한다.
 
 
-    /**
-   	 * 글쓰기 등록
-   	 * 
-   	 * @param model
-   	 * @param writer
-   	 * @param contents
-   	 * @param file
-   	 * @param redirectAttributes
-   	 * @return
-   	 */
-   	@PostMapping("/summernote/insert")
-   	public String summernoteInsert(Model model, 
-   								  @ModelAttribute Summernote summernote,
-								   //@RequestParam(value="files", required=false) MultipartFile files,
-   								   RedirectAttributes redirectAttributes) {
-   		logger.debug("{}", "[/insertSummernote.do] : 게시글 등록 요청");
-   		logger.debug("summernote={}", summernote);
-//		logger.debug("files={}", files);
-   		
-   		
-   		Summernote summernote = new Summernote();
-   		summernote.setWriter(writer);
-   		summernote.setContents(contents);
-   		summernote.setRegDate(new Date());
-   		
-   		logger.debug("note={}",summernote);
-   		
-   		summernote = summernoteService.save(summernote);
-   		
-   		//등록여부에 따른 분기처리
-   		redirectAttributes.addFlashAttribute("msg", summernote.isNew()?"등록실패!":"등록성공!");
-   		
-   		return "redirect:/summernote/view/"+summernote.getId();
-   	}
+	    /**
+	   	 * 글쓰기 등록
+	   	 * 
+	   	 * @param model
+	   	 * @param writer
+	   	 * @param contents
+	   	 * @param file
+	   	 * @param redirectAttributes
+	   	 * @return
+	   	 */
+	   	@PostMapping("/summernote/insert")
+	   	public String summernoteInsert(Model model, 
+	   								  @ModelAttribute Summernote summernote,
+									   //@RequestParam(value="files", required=false) MultipartFile files,
+	   								   RedirectAttributes redirectAttributes) {
+	   		logger.debug("{}", "[/insertSummernote.do] : 게시글 등록 요청");
+	   		logger.debug("summernote={}", summernote);
+			//logger.debug("files={}", files);
+	   		
+	   		
+	   		Summernote summernote = new Summernote();
+	   		summernote.setWriter(writer);
+	   		summernote.setContents(contents);
+	   		summernote.setRegDate(new Date());
+	   		
+	   		logger.debug("note={}",summernote);
+	   		
+	   		summernote = summernoteService.save(summernote);
+	   		
+	   		//등록여부에 따른 분기처리
+	   		redirectAttributes.addFlashAttribute("msg", summernote.isNew()?"등록실패!":"등록성공!");
+	   		
+	   		return "redirect:/summernote/view/"+summernote.getId();
+	   	}
 
 @com.kh.spring.summernote.model.vo.Summernote
 * `AbstractPersistable<Long>`을 상속하므로 id필드는 생략가능하지만, `사용자입력값 - command객체` 필드 바인딩시에 id값이 누락되므로
