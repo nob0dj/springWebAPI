@@ -197,14 +197,12 @@ summernote api 적용
    	 */
    	@PostMapping("/summernote/insert")
    	public String summernoteInsert(Model model, 
-   								   @RequestParam("writer") String writer,
-   								   @RequestParam("contents") String contents,
-   								   @RequestParam(value="file", required=false) MultipartFile file,
+   								  @ModelAttribute Summernote summernote,
+								   //@RequestParam(value="files", required=false) MultipartFile files,
    								   RedirectAttributes redirectAttributes) {
    		logger.debug("{}", "[/insertSummernote.do] : 게시글 등록 요청");
-   		logger.debug("writer={}", writer);
-   		logger.debug("contents={}", contents);
-   		logger.debug("file={}", file);//null
+   		logger.debug("summernote={}", summernote);
+//		logger.debug("files={}", files);
    		
    		
    		Summernote summernote = new Summernote();
