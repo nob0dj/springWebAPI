@@ -59,7 +59,7 @@ public class Summernote extends AbstractPersistable<Long> implements Serializabl
 //	@DateTimeFormat(iso=DateTimeFormat.ISO.DATE)
 //	@DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME)
 	@DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-	/* 날짜/시각 정보를 모두 지정하기 위해 아래 어노테이션을 사용한다.(기본값이므로 생략가능. DATE, TIME을 사용하면 해당정보만 저장됨)*/
+	/* 날짜/시각 정보를 모두 지정하기 위해 아래 @Temporal어노테이션을 사용한다.(기본값이므로 생략가능. DATE, TIME을 사용하면 해당정보만 저장됨)*/
 	@Temporal(TemporalType.TIMESTAMP)
 	Date regDate = new Date();
 

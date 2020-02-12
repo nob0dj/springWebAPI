@@ -3,15 +3,17 @@
 --==============================================================
 create table summernote(
     id number,
-    writer varchar2(256) not null,
-    summernote clob,
+    writer varchar2(256),                   --글쓴이: not null처리 안함
+    contents clob,                          --내용: not null처리 안함
     reg_date date default sysdate,
-    constraint pk_summernote primary key(id)
+    is_temp char(1) default 'N',            --임시파일여부
+    constraint pk_summernote primary key(id),
+    constraint ck_summernote check(is_temp in('Y','N'))
 );
 
 create sequence seq_summernote;
 
-
+select * from summernote order by id desc;
 
 --==============================================================
 -- s3object 테이블 생성
@@ -33,6 +35,14 @@ create table s3object(
 --truncate table s3object;
 create sequence seq_s3object;
 
+
+select 
+    *
+from 
+    summernote;
+
+--delete from summernote where is_temp = 'Y';
+--commit;
 
 select 
   * 
