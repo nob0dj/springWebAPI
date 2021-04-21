@@ -1,0 +1,13 @@
+#application.yml
+
+server:
+  port: 9090
+  servlet:
+    context-path: /oauth-kakao
+ 
+
+   
+#logging
+logging:
+  level:
+    com.shqkel: DEBUG

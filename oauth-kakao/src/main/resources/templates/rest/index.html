@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>oauth - kakao</title>
+</head>
+<body>
+	<h1>Kakao Login With REST API </h1>
+	
+	<div th:if="${loginUser == null}">
+		<a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=d1b48dc4750808a98c7d2bcaee092f5f&redirect_uri=http://localhost:9090/oauth-kakao/rest/redirect">
+			<img th:src="@{/kakao_login_medium_narrow.png}"/>	
+		</a>
+	</div>
+	<div th:if="${loginUser != null}">
+		<img th:src="${loginUser.thumbnail_image}"/>
+		<p th:text="${loginUser.nickname}"></p>
+		<p th:text="${loginUser.email}"></p>
+		<button type="button" th:onclick="|location.href='@{/rest/logout}';|">로그아웃</button>
+	</div>
+</body>
+</html>
